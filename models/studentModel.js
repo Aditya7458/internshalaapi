@@ -22,11 +22,17 @@ const studentModel = new mongoose.Schema(
   { timeStamps: true }
 );
 studentModel.pre("save", function (next) {
+  if (!this.isModified("password")) {
+    return;
+  }
   let salt = bcrypt.genSaltSync(10);
   this.password = bcrypt.hashSync(this.password, salt);
   next();
 });
 
+studentModel.methods.comparepassword = function(password) {
+  return bcrypt.compareSync(password, this.password);
+};
 
 const Student = mongoose.model("student", studentModel);
 
