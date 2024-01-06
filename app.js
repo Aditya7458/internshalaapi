@@ -12,10 +12,16 @@ app.use(logger("tiny"));
 // body parser
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-// session and cokie
 
+// session and cokie
 const session = require("express-session");
 const cokieparser = require("cookie-parser");
+
+// express-fileupload
+const fileupload = require("express-fileupload");
+app.use(fileupload());
+
+
 app.use(
   session({
     resave: true,

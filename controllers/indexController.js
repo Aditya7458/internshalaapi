@@ -3,6 +3,9 @@ const Student = require("../models/studentModel");
 const ErrorHandler = require("../utils/ErrorHandler");
 const { sendtoken } = require("../utils/SendToken");
 const { sendmail } = require("../utils/nodemailer");
+const path = require("path");
+const imagekit = require("../utils/imageKit").initImageKit();
+
 exports.homepage = catchAsyncErrors(async (req, res, next) => {
   res.json({ message: "homepage" });
 });
@@ -57,7 +60,6 @@ exports.studentsendmail = catchAsyncErrors(async (req, res, next) => {
   console.log(student.resetPasswordToken, "before");
   sendmail(req, res, next, url);
   // student.resetPasswordToken = "1"
-  console.log(student.resetPasswordToken, "after");
   await Student.findByIdAndUpdate(student._id, {
     resetPasswordToken: "1",
   });
@@ -94,9 +96,43 @@ exports.studentresetpassword = catchAsyncErrors(async (req, res, next) => {
 });
 
 exports.studentupdate = catchAsyncErrors(async (req, res, next) => {
-  await Student.findByIdAndUpdate(req.params.id, req.body).exec();
+  const updatedStudent = await Student.findByIdAndUpdate(
+    req.params.id,
+    req.body,
+    {
+      new: true, // Return the updated document
+      runValidators: true, // Run validators on update
+    }
+  ).exec();
+
   res.status(200).json({
     success: true,
     message: "Student updated successfully",
+    data: updatedStudent,
   });
+});
+
+exports.studentavatar = catchAsyncErrors(async (req, res, next) => {
+  const student = await Student.findById(req.params.id).exec();
+  const file = req.files.avatar;
+  const modifiedFileName = `resumebuilder-${Date.now()}${path.extname(
+    file.name
+  )}`;
+
+  if (student.avatar.fileId !== "") {
+    await imagekit.deleteFile(student.avatar.fileId);
+  }
+  const { fileId, url } = await imagekit.upload({
+    file: file.data,
+    fileName: modifiedFileName,
+  });
+
+  // student.avatar = { fileId, url };
+  // await student.save();
+  await Student.findByIdAndUpdate(student._id, {
+    avatar: { fileId, url },
+  });
+  res
+    .status(200)
+    .json({ success: true, message: "avatar uploaded successfully" });
 });

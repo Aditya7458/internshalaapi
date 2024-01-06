@@ -3,6 +3,13 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const studentModel = new mongoose.Schema(
   {
+    avatar: {
+      type: Object,
+      default: {
+        fileId: "",
+        url: "https://t3.ftcdn.net/jpg/03/46/83/96/240_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg",
+      },
+    },
     firstname: {
       type: String,
       required: [true, "First Name is Required"],
@@ -30,7 +37,7 @@ const studentModel = new mongoose.Schema(
     },
     gender: {
       type: String,
-      enum: ["Male", "Female", "Other"],
+      enum: ["Male", "Female", "Other", "male", "female", "other"],
     },
     email: {
       type: String,
@@ -52,7 +59,6 @@ const studentModel = new mongoose.Schema(
       type: String,
       default: "0",
     },
-    avatar: String,
   },
   { timestamps: true }
 );
