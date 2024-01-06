@@ -1,7 +1,37 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 const studentModel = new mongoose.Schema(
   {
+    firstname: {
+      type: String,
+      required: [true, "First Name is Required"],
+      unique: true,
+      maxlength: [15, "First Name should not exceed more then 15 characters"],
+      minlength: [4, "First Name should have atleast 4 characters"],
+    },
+    lastname: {
+      type: String,
+      required: [true, "Last Name is Required"],
+      unique: true,
+      maxlength: [15, "Last Name should not exceed more then 15 characters"],
+      minlength: [4, "Last Name should have atleast 4 characters"],
+    },
+    contact: {
+      type: String,
+      required: [true, "Contact is Required"],
+      maxlength: [10, "Contact should not exceed more then 10 characters"],
+      minlength: [10, "Contact should have atleast 10 characters"],
+    },
+    city: {
+      type: String,
+      required: [true, "City Name is Required"],
+      minlength: [3, "City should have atleast 3 characters"],
+    },
+    gender: {
+      type: String,
+      enum: ["Male", "Female", "Other"],
+    },
     email: {
       type: String,
       unique: true,
@@ -18,8 +48,13 @@ const studentModel = new mongoose.Schema(
       minlength: [4, "Password should have atleast 4 characters"],
       // match:[]
     },
+    resetPasswordToken: {
+      type: String,
+      default: "0",
+    },
+    avatar: String,
   },
-  { timeStamps: true }
+  { timestamps: true }
 );
 studentModel.pre("save", function (next) {
   if (!this.isModified("password")) {
@@ -30,8 +65,14 @@ studentModel.pre("save", function (next) {
   next();
 });
 
-studentModel.methods.comparepassword = function(password) {
+studentModel.methods.comparepassword = function (password) {
   return bcrypt.compareSync(password, this.password);
+};
+
+studentModel.methods.getjwttoken = function () {
+  return jwt.sign({ id: this._id }, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_EXPIRE,
+  });
 };
 
 const Student = mongoose.model("student", studentModel);

@@ -2,29 +2,39 @@ require("dotenv").config({ path: "./.env" });
 const express = require("express");
 const app = express();
 
-
-
 // db connection
-require("./models/database").connectDatabase()
+require("./models/database").connectDatabase();
 
 // logger
 const logger = require("morgan");
 app.use(logger("tiny"));
 
-// body parser 
-app.use(express.json())
-app.use(express.urlencoded({extended:false}))
+// body parser
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+// session and cokie
+
+const session = require("express-session");
+const cokieparser = require("cookie-parser");
+app.use(
+  session({
+    resave: true,
+    saveUninitialized: true,
+    secret: process.env.EXPRESS_SESSION_SECRET,
+  })
+);
+app.use(cokieparser());
 
 // get route /
 app.use("/", require("./routes/indexRoutes"));
 
 // error handling
 const ErrorHandler = require("./utils/ErrorHandler");
-const {generatedErrors}=require("./middlewares/error")
+const { generatedErrors } = require("./middlewares/error");
 app.all("*", (req, res, next) => {
   next(new ErrorHandler(`Requested Url Not Found ${req.url}`, 404));
 });
-app.use(generatedErrors)
+app.use(generatedErrors);
 
 // port created
 app.listen(
