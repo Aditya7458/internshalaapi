@@ -59,6 +59,16 @@ const studentModel = new mongoose.Schema(
       type: String,
       default: "0",
     },
+    resume: {
+      education: [],
+      jibd: [],
+      internships: [],
+      responsibilities: [],
+      courses: [],
+      projects: [],
+      skills: [],
+      accomplishments: [],
+    },
   },
   { timestamps: true }
 );

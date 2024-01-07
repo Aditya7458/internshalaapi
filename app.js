@@ -32,7 +32,8 @@ app.use(
 app.use(cokieparser());
 
 // get route /
-app.use("/", require("./routes/indexRoutes"));
+app.use("/user", require("./routes/indexRoutes"));
+app.use("/resume", require("./routes/resumeRoutes"));
 
 // error handling
 const ErrorHandler = require("./utils/ErrorHandler");
