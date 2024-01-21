@@ -9,6 +9,4 @@ exports.sendtoken = (student, statusCode, res) => {
   };
 
   res.status(statusCode).cookie("token",token, options).json({success:true,id:student._id, token})
-
-  res.json({ token });
 };

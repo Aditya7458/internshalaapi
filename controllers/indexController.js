@@ -20,10 +20,7 @@ exports.studentsignup = catchAsyncErrors(async (req, res, next) => {
   sendtoken(student, 201, res);
 });
 
-exports.studentsignup = catchAsyncErrors(async (req, res, next) => {
-  const student = await new Student(req.body).save();
-  sendtoken(student, 201, res);
-});
+
 
 exports.studentsignin = catchAsyncErrors(async (req, res, next) => {
   const student = await Student.findOne({ email: req.body.email })

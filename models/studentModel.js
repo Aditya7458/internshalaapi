@@ -44,7 +44,7 @@ const studentModel = new mongoose.Schema(
       unique: true,
       required: [true, "Email is Required"],
       match: [
-        /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
+        /^\w+([\.-]?\w+)@\w+([\.-]?\w+)(\.\w{2,3})+$/,
         "Please fill a valid email address",
       ],
     },
@@ -60,14 +60,38 @@ const studentModel = new mongoose.Schema(
       default: "0",
     },
     resume: {
-      education: [],
-      jibd: [],
-      internships: [],
-      responsibilities: [],
-      courses: [],
-      projects: [],
-      skills: [],
-      accomplishments: [],
+      education: {
+        type: Array,
+        default: [],
+      },
+      jibd: {
+        type: Array,
+        default: [],
+      },
+      internships: {
+        type: Array,
+        default: [],
+      },
+      responsibilities: {
+        type: Array,
+        default: [],
+      },
+      courses: {
+        type: Array,
+        default: [],
+      },
+      projects: {
+        type: Array,
+        default: [],
+      },
+      skills: {
+        type: Array,
+        default: [],
+      },
+      accomplishments: {
+        type: Array,
+        default: [],
+      },
     },
   },
   { timestamps: true }
